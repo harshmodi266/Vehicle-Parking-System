@@ -51,7 +51,7 @@
             ];
 
             $db->update('vehicle',$params,"id='{$_POST['vehicle_id']}'");
-            $response = $db->getResult();
+            $response = $db->getResult(); 
             if(!empty($response)){
                 echo json_encode(array('success'=>$response));
             }else{

@@ -1,5 +1,6 @@
 <?php $title = "Vehicle";
 include "header.php" ?>
+
 <div class="message"></div>
 <div class="container">
     <div class="admin-content">
@@ -52,8 +53,10 @@ $result = mysqli_query($conn, "SELECT * FROM vehicle ORDER BY id DESC");
                                 </td>
                                 <td>
                                     <ul class="action-list">
-                                        <li><a href="view-vehicle.php?veid=<?php echo $row['id']; ?>"
-                                                class="btn btn-primary btn-sm"><img src="images/eye.png" alt=""></a>
+                                        <li> <a href="view-vehicle.php?veid=<?php echo (int)$row['id']; ?>"
+                                                class="btn btn-primary btn-sm">
+                                                <img src="images/eye.png" alt="">
+                                            </a>
                                         </li>
                                     </ul>
                                 </td>
