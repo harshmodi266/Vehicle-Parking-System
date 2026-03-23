@@ -23,41 +23,53 @@ $(document).ready(function () {
     }
 
     //check admin login
-    $("#admin_Login").on("submit", function (e) {
-        e.preventDefault();
-        var username = $('.username').val();
-        var password = $('.password').val();
-        if (username == '' || password == '') {
-            messageShow("<div class='alert alert-danger'>Please fill all the fields.</div>");
-        } else {
-            document.getElementsByClassName('card-body')[0].innerHTML += loader;
-            $.ajax({
-                url: './php_files/admin_login.php',
-                type: 'POST',
-                data: { login: 1, name: username, pass: password },
-                success: function (data) {
-                    var data = JSON.parse(data);
-                    if (data.hasOwnProperty('success')) {
-                        messageShow("<div class='alert alert-success'>Logged In Successfully.</div>");
-                        setTimeout(function () { window.location = 'dashboard.php' }, 2000);
-                    } else if (data.hasOwnProperty('error')) {
-                        messageShow("<div class='alert alert-danger'>Username and Password are not matched.</div>");
-                        setTimeout(function () { $('.loader').hide(); }, 2000);
+    $(document).ready(function () {
+        $("#admin_Login").on("submit", function (e) {
+            e.preventDefault();
+
+            var username = $('.username').val();
+            var password = $('.password').val();
+
+            if (username == '' || password == '') {
+                alert("Fill all fields");
+            } else {
+                $.ajax({
+                    url: './php_files/admin_login.php',
+                    type: 'POST',
+                    dataType: 'json', // 🔥 IMPORTANT
+                    data: {
+                        login: 1,
+                        username: username,
+                        password: password
+                    },
+                    success: function (data) {
+                        console.log(data);
+
+                        if (data.success) {
+                            window.location.href = "dashboard.php";
+                        } else {
+                            alert("Login failed");
+                        }
                     }
-                }
-            });
-        }
+                });
+            }
+
+            return false;
+        });
     });
 
     //admin logout
-    $('.logout').click(function () {
+    $(document).on('click', '.logout', function () {
         $.ajax({
             url: './php_files/admin_login.php',
             type: 'POST',
             data: { logout: '1' },
             success: function (data) {
-                if (data == '1') {
-                    setTimeout(function () { window.location = 'index.php'; }, 1000);
+                console.log(data);
+
+                if (data.trim() == '1') {
+                    // 🔥 FORCE REDIRECT
+                    window.location.href = "index.php";
                 }
             }
         });

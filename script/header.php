@@ -113,7 +113,7 @@ echo (!empty($result) && isset($result[0]['site_name']))
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="profile.php">My Profile</a>
-                                <a class="dropdown-item logout" href="#">Log Out</a>
+                                <a class="dropdown-item logout" href="index.php">Log Out</a>
                             </div>
                         </div>
                     </div>

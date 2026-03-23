@@ -74,7 +74,7 @@ echo (!empty($result) && isset($result[0]['site_name']))
         </div>
     </div>
 
-    <script src="assets/js/jquery.js" charset="utf-8"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="assets/js/admin.js" charset="utf-8"></script>
     <script src="assets/js/jquery.dataTables.js" charset="utf-8"></script>
 </body>

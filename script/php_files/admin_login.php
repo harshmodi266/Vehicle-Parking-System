@@ -1,45 +1,39 @@
 <?php 
-    include "config.php";
+session_start(); //  MUST BE AT TOP
 
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
+include "config.php";
 
-    //admin login script
-   if(isset($_POST['login'])){
-    if(!isset($_POST['username']) || empty($_POST['username'])){
-        echo json_encode(array('error'=>'Username empty')); exit;
-    }else if(!isset($_POST['password']) || empty($_POST['password'])){
-        echo json_encode(array('error'=>'Password empty')); exit;
-    }else{
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-        $db = new Database();
-        $username = $_POST['username'];
-$password = $_POST['password'];
+if(isset($_POST['login'])){
 
-        $conn = $db->conn;
-
-$query = "SELECT * FROM admin WHERE admin_username='$username' AND admin_password='$password'";
-$res = mysqli_query($conn, $query);
-
-if(mysqli_num_rows($res) > 0){
-    session_start();
-    $row = mysqli_fetch_assoc($res);
-    $_SESSION['admin_fullname'] = $row['admin_fullname'];
-    echo json_encode(['success'=>'true']); 
-    exit;
-}else{
-    echo json_encode(['error'=>'false']); 
-    exit;
-}
-
-        if(!empty($result)){
-            session_start();
-            $_SESSION['admin_fullname'] = $result[0]['admin_fullname'];
-            echo json_encode(array('success'=>'true')); exit;
-        }else{
-            echo json_encode(array('error'=>'false')); exit;
-        }
+    if(empty($_POST['username'])){
+        echo json_encode(['error'=>'Username empty']); exit;
     }
+
+    if(empty($_POST['password'])){
+        echo json_encode(['error'=>'Password empty']); exit;
+    }
+
+    $db = new Database();
+    $conn = $db->conn;
+
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $query = "SELECT * FROM admin WHERE admin_username='$username' AND admin_password='$password'";
+    $res = mysqli_query($conn, $query);
+
+    if(mysqli_num_rows($res) > 0){
+        $row = mysqli_fetch_assoc($res);
+        $_SESSION['admin_fullname'] = $row['admin_fullname'];
+
+        echo json_encode(['success'=>'true']); 
+    }else{
+        echo json_encode(['error'=>'false']); 
+    }
+    exit;
 }
 
     //admin logout script
@@ -53,12 +47,6 @@ if(mysqli_num_rows($res) > 0){
 
         echo '1'; exit;
     }
-
-
-
-
-
-
 
 
 ?>
