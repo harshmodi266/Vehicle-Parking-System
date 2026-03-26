@@ -24,10 +24,10 @@ if($vehicle_id <= 0){
     exit;
 }
                 $db = new Database();
-                $db->select('vehicle','*',null,"id=$vehicle_id",null,null);
+               $db->select("SELECT * FROM vehicle WHERE id=$vehicle_id");
                 $result = $db->getResult();
                 if(count($result) > 0){
-    foreach($result as $row){
+    $row = $result[0];
             ?>
                 <table class="table table-bordered">
                     <tr>
@@ -38,14 +38,15 @@ if($vehicle_id <= 0){
                         <th>Vehicle Category</th>
                         <td>
                             <?php 
-                        $db->select('vehicle_category','*',null,null,null,null);
+                        $db->select("SELECT * FROM vehicle_category WHERE id=".$row['vehicle_cat']);
                         $result1 = $db->getResult();
-                        $vehicle_cat = (int)$row['vehicle_cat'];
+                        $vehicle_cat = (int)$row['vehicle_cat']; 
                         if(count($result1) > 0){ ?>
                             <?php foreach($result1 as $row1){
                                 if($row1['id'] == $vehicle_cat){ ?>
                             <input type="hidden" id="charge" value="<?php echo $row1['parking_charge'] ?>">
                             <input type="hidden" id="pcharge" value="<?php echo $row1['parking_charge'] ?>">
+
                             <?php echo $row1['category_name']; ?>
                             <?php } ?>
                             <?php } ?>
@@ -114,7 +115,7 @@ if($vehicle_id <= 0){
                 </table>
 
                 <?php
-    } // end foreach
+    // end foreach
 } else {
     echo "<div class='alert alert-danger'>Vehicle not found!</div>";
 }
@@ -135,9 +136,23 @@ if($vehicle_id <= 0){
                                     <div class="form-group">
                                         <label><b>In Time :</b></label>
                                         <input type="hidden" id="vehicle_id" value="<?php echo $row['id']; ?>">
-                                        <input type="hidden" id="in-time" value="<?php echo $row['vehicle_intime']; ?>">
-                                        <input type="hidden" id="currency-format"
+                                        <input type="hidden" id="modal_in_time"
+                                            value="<?php echo $row['vehicle_intime']; ?>">
+                                        <input type="hidden" id="modal_currency_format"
                                             value="<?php echo $currency_format; ?>">
+                                        <?php 
+                                            $parking_charge_value = 0;
+
+                                            foreach($result1 as $row1){
+                                                if($row1['id'] == $vehicle_cat){
+                                                    $parking_charge_value = $row1['parking_charge'];
+                                                    echo $row1['category_name'];
+                                                }
+                                            }
+                                            ?>
+
+                                        <input type="hidden" id="modal_charge"
+                                            value="<?php echo $parking_charge_value; ?>">
                                         <?php
                           $in_time = $row['vehicle_intime']; 
                           // $in_time = substr($in_time, 0, strpos($in_time, '('));
@@ -175,6 +190,7 @@ if($vehicle_id <= 0){
             </div>
         </div>
     </div>
+
 </div>
 <script type="text/javascript">
 function displayclick() {
@@ -239,6 +255,47 @@ if (chargeEl) {
 
     document.getElementById('parking_charge').innerHTML = currency_format + charge;
 }
+</script>
+<script>
+function updateClock1() {
+    var now = new Date();
+    var formatted = now.getFullYear() + "-" +
+        ("0" + (now.getMonth() + 1)).slice(-2) + "-" +
+        ("0" + now.getDate()).slice(-2) + " " +
+        ("0" + now.getHours()).slice(-2) + ":" +
+        ("0" + now.getMinutes()).slice(-2) + ":" +
+        ("0" + now.getSeconds()).slice(-2);
+
+    $("#clock1").text(formatted);
+}
+
+// run when modal opens
+$('#exampleModalCenter').on('shown.bs.modal', function() {
+
+    updateClock1();
+
+    var parking_charges = document.getElementById('modal_charge').value;
+
+    if (parking_charges === undefined || parking_charges === null) {
+        console.log("No charge found");
+        return;
+    }
+
+    var currency_format = document.getElementById('modal_currency_format').value;
+    var dateOne = document.getElementById('modal_in_time').value;
+
+    dateOne = dateOne.replace(/-/g, "/");
+
+    const dateOneObj = new Date(dateOne);
+    var dateTwoObj = new Date();
+
+    var diff = (dateTwoObj - dateOneObj) / 3600000;
+    var hours = Math.ceil(Math.abs(diff));
+
+    var charge = hours * parking_charges;
+
+    document.getElementById('p-charge').innerHTML = currency_format + charge;
+});
 </script>
 
 <?php include "footer.php" ?>
