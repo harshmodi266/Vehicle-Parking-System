@@ -192,6 +192,10 @@ if($vehicle_id <= 0){
     </div>
 
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
 function displayclick() {
     var date = (new Date()).toISOString().split('T')[0];
@@ -274,7 +278,14 @@ $('#exampleModalCenter').on('shown.bs.modal', function() {
 
     updateClock1();
 
-    var parking_charges = document.getElementById('modal_charge').value;
+    var chargeEl = document.getElementById('modal_charge');
+
+    if (!chargeEl) {
+        console.log("modal_charge not found");
+        return;
+    }
+
+    var parking_charges = chargeEl.value;
 
     if (parking_charges === undefined || parking_charges === null) {
         console.log("No charge found");
