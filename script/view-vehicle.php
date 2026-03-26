@@ -154,11 +154,11 @@ if($vehicle_id <= 0){
                                         <input type="hidden" id="modal_charge"
                                             value="<?php echo $parking_charge_value; ?>">
                                         <?php
-                          $in_time = $row['vehicle_intime']; 
-                          // $in_time = substr($in_time, 0, strpos($in_time, '('));
-                          // echo date('Y-m-d h:i:s a', strtotime($in_time. "+270 minutes"));
-                          echo date('Y-m-d h:i:s a', strtotime($in_time));
-                        ?>
+                                        $in_time = $row['vehicle_intime']; 
+                                        // $in_time = substr($in_time, 0, strpos($in_time, '('));
+                                        // echo date('Y-m-d h:i:s a', strtotime($in_time. "+270 minutes"));
+                                        echo date('Y-m-d h:i:s a', strtotime($in_time));
+                                        ?>
                                     </div>
                                     <div class="form-group">
                                         <label><b>Out Time :</b></label>
