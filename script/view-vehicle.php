@@ -1,5 +1,27 @@
-<?php $title = "View Vehicle";
-include "header.php" ?>
+<?php
+
+$title = "View Vehicle";
+include "header.php";
+
+if(isset($_POST['submit'])){
+    $vehicle_id = $_POST['vehicle_id'] ?? 0;
+    $status = $_POST['vehicle_status'] ?? '';
+
+   $conn = mysqli_connect("localhost","root","","install");
+
+mysqli_query($conn, "
+    UPDATE vehicle 
+    SET vehicle_status='$status', vehicle_outtime='".date("Y-m-d H:i:s")."' 
+    WHERE id=".(int)$vehicle_id
+);
+
+
+    echo "<script>window.location.href='vehicle.php';</script>";
+    exit;
+}
+
+
+?>
 <div class="message"></div>
 <div class="container">
     <div class="admin-content">
@@ -38,19 +60,26 @@ if($vehicle_id <= 0){
                         <th>Vehicle Category</th>
                         <td>
                             <?php 
-                        $db->select("SELECT * FROM vehicle_category WHERE id=".$row['vehicle_cat']);
-                        $result1 = $db->getResult();
-                        $vehicle_cat = (int)$row['vehicle_cat']; 
-                        if(count($result1) > 0){ ?>
-                            <?php foreach($result1 as $row1){
-                                if($row1['id'] == $vehicle_cat){ ?>
-                            <input type="hidden" id="charge" value="<?php echo $row1['parking_charge'] ?>">
-                            <input type="hidden" id="pcharge" value="<?php echo $row1['parking_charge'] ?>">
+$db->select("SELECT * FROM vehicle_category WHERE id=".$row['vehicle_cat']);
+$result1 = $db->getResult();
 
+$vehicle_cat = (int)$row['vehicle_cat']; 
+
+$parking_charge_value = 0;
+
+if(!empty($result1)){
+    foreach($result1 as $row1){
+        if($row1['id'] == $vehicle_cat){
+            $parking_charge_value = $row1['parking_charge'];
+?>
+                            <input type="hidden" id="charge" value="<?php echo $parking_charge_value; ?>">
+                            <input type="hidden" id="pcharge" value="<?php echo $parking_charge_value; ?>">
                             <?php echo $row1['category_name']; ?>
-                            <?php } ?>
-                            <?php } ?>
-                            <?php } ?>
+                            <?php
+        }
+    }
+}
+?>
                         </td>
                     </tr>
                     <tr>
@@ -126,57 +155,52 @@ if($vehicle_id <= 0){
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">View Vehicle</h5>
+                                <h5 class="modal-title">View Vehicle</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body position-relative">
-                                <form class="yourform" id="update-vehicle" action="" method="post" autocomplete="off">
+                                <form id="update-form" action="" method="post" autocomplete="off">
                                     <div class="form-group">
                                         <label><b>In Time :</b></label>
-                                        <input type="hidden" id="vehicle_id" value="<?php echo $row['id']; ?>">
+                                        <input type="hidden" name="vehicle_id" value="<?php echo $row['id']; ?>">
                                         <input type="hidden" id="modal_in_time"
                                             value="<?php echo $row['vehicle_intime']; ?>">
                                         <input type="hidden" id="modal_currency_format"
-                                            value="<?php echo $currency_format; ?>">
-                                        <?php 
-                                            $parking_charge_value = 0;
+                                            value="<?php echo $currency_format ?? '₹'; ?>">
 
-                                            foreach($result1 as $row1){
-                                                if($row1['id'] == $vehicle_cat){
-                                                    $parking_charge_value = $row1['parking_charge'];
-                                                    echo $row1['category_name'];
-                                                }
-                                            }
-                                            ?>
-
+                                        <!-- Use parking charge from the table row1 -->
                                         <input type="hidden" id="modal_charge"
                                             value="<?php echo $parking_charge_value; ?>">
+
                                         <?php
-                                        $in_time = $row['vehicle_intime']; 
-                                        // $in_time = substr($in_time, 0, strpos($in_time, '('));
-                                        // echo date('Y-m-d h:i:s a', strtotime($in_time. "+270 minutes"));
+                                        $in_time = $row['vehicle_intime'];
                                         echo date('Y-m-d h:i:s a', strtotime($in_time));
                                         ?>
                                     </div>
+
                                     <div class="form-group">
                                         <label><b>Out Time :</b></label>
                                         <span id="clock1"></span>
                                     </div>
+
                                     <div class="form-group">
                                         <label><b>Parking Charge :</b></label>
-                                        <span id="p-charge"></span>
+                                        <span id="p-charge"
+                                            style="font-weight:bold; color:green; font-size:18px;"></span>
                                     </div>
+
                                     <div class="form-group">
                                         <label><b>Status :</b></label>
-                                        <select class="form-control vehicle_status" name="vehicle_status" id="">
+                                        <select class="form-control" name="vehicle_status" required>
                                             <option value="1">Outgoing Vehicle</option>
                                         </select>
                                     </div>
+
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <input type="submit" name="submit" class="btn btn-primary float-right"
-                                        value="submit" required>
+                                    <button type="submit" name="submit"
+                                        class="btn btn-primary float-right">Submit</button>
                                 </form>
                             </div>
                         </div>
@@ -190,122 +214,116 @@ if($vehicle_id <= 0){
             </div>
         </div>
     </div>
-
 </div>
+
+<!-- Scripts should be here - after all HTML -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script type="text/javascript">
 function displayclick() {
-    var date = (new Date()).toISOString().split('T')[0];
     var time = new Date();
-    var month = time.getUTCMonth() + 1; //months from 1-12
-    var day = time.getUTCDate();
+    var month = ("0" + (time.getUTCMonth() + 1)).slice(-2);
+    var day = ("0" + time.getUTCDate()).slice(-2);
     var year = time.getUTCFullYear();
     var hrs = time.getHours();
-    var min = time.getMinutes();
-    var sec = time.getSeconds();
-    var en = 'am';
+    var min = ("0" + time.getMinutes()).slice(-2);
+    var sec = ("0" + time.getSeconds()).slice(-2);
+    var en = hrs >= 12 ? 'pm' : 'am';
+    if (hrs > 12) hrs -= 12;
+    if (hrs === 0) hrs = 12;
 
-    if (hrs > 12) {
-        en = 'pm';
-    }
-
-    if (hrs > 12) {
-        hrs = hrs - 12;
-    }
-
-    if (hrs == 0) {
-        hrs = 12;
-    }
-
-    if (hrs < 10) {
-        hrs = '0' + hrs;
-    }
-
-    if (min < 10) {
-        min = '0' + min;
-    }
-
-    if (sec < 10) {
-        sec = '0' + sec;
-    }
-
-    document.getElementById('clock').innerHTML = year + "-" + month + "-" + day + ' ' + hrs + ':' + min + ':' + sec +
-        ' ' + en;
-    // document.getElementById('clock').innerHTML = time;
+    var clockEl = document.getElementById('clock');
+    if (clockEl) clockEl.innerHTML = year + "-" + month + "-" + day + ' ' + hrs + ':' + min + ':' + sec + ' ' + en;
 }
 setInterval(displayclick, 500);
-
-var chargeEl = document.getElementById('charge');
-
-if (chargeEl) {
-    var parking_charges = chargeEl.value;
-    var currency_format = document.getElementById('currency_format').value;
-    var dateOne = document.getElementById('in_time').value;
-
-    dateOne = dateOne.replace(/-/g, "/");
-
-    const dateOneObj = new Date(dateOne);
-    var dateTwoObj = new Date();
-
-    var diff = (dateTwoObj - dateOneObj) / 1000;
-    diff /= (60 * 60);
-
-    var hours = Math.abs(Math.ceil(diff));
-
-    var charge = parseInt(hours) * parking_charges;
-
-    document.getElementById('parking_charge').innerHTML = currency_format + charge;
-}
 </script>
+
 <script>
-function updateClock1() {
-    var now = new Date();
-    var formatted = now.getFullYear() + "-" +
-        ("0" + (now.getMonth() + 1)).slice(-2) + "-" +
-        ("0" + now.getDate()).slice(-2) + " " +
-        ("0" + now.getHours()).slice(-2) + ":" +
-        ("0" + now.getMinutes()).slice(-2) + ":" +
-        ("0" + now.getSeconds()).slice(-2);
+// Main page charge calculation - Extremely Safe
+document.addEventListener('DOMContentLoaded', function() {
+    const chargeEl = document.getElementById('charge');
+    if (!chargeEl || !chargeEl.value) return;
 
-    $("#clock1").text(formatted);
-}
+    const parking_charges = parseInt(chargeEl.value) || 0;
+    if (parking_charges <= 0) return;
 
-// run when modal opens
+    const currencyEl = document.getElementById('currency_format');
+    if (!currencyEl) return;
+
+    const currency_format = currencyEl.value || '₹';
+    const inTimeEl = document.getElementById('in_time');
+    if (!inTimeEl || !inTimeEl.value) return;
+
+    try {
+        const dateOne = inTimeEl.value.replace(/-/g, "/");
+        const diffHours = Math.abs(Math.ceil((new Date() - new Date(dateOne)) / 1000 / 3600));
+        const charge = diffHours * parking_charges;
+
+        const parkingDiv = document.getElementById('parking_charge');
+        if (parkingDiv) parkingDiv.innerHTML = currency_format + charge;
+    } catch (e) {
+        console.log("Main charge error:", e);
+    }
+});
+</script>
+
+<script>
+// Modal charge calculation
 $('#exampleModalCenter').on('shown.bs.modal', function() {
-
+    // Clock
+    const updateClock1 = () => {
+        const now = new Date();
+        const formatted = now.getFullYear() + "-" +
+            ("0" + (now.getMonth() + 1)).slice(-2) + "-" +
+            ("0" + now.getDate()).slice(-2) + " " +
+            ("0" + now.getHours()).slice(-2) + ":" +
+            ("0" + now.getMinutes()).slice(-2) + ":" +
+            ("0" + now.getSeconds()).slice(-2);
+        $("#clock1").text(formatted);
+    };
     updateClock1();
 
-    var chargeEl = document.getElementById('modal_charge');
+    // Charge
+    const chargeEl = document.getElementById('modal_charge');
+    const chargeValue = chargeEl ? parseInt(chargeEl.value) || 0 : 0;
 
-    if (!chargeEl) {
-        console.log("modal_charge not found");
+    console.log("🔍 Modal Charge Value =", chargeValue);
+
+    if (chargeValue <= 0) {
+        document.getElementById('p-charge').innerHTML = "₹0";
         return;
     }
 
-    var parking_charges = chargeEl.value;
+    const currencyEl = document.getElementById('modal_currency_format');
+    const currency = currencyEl ? currencyEl.value : '₹';
 
-    if (parking_charges === undefined || parking_charges === null) {
-        console.log("No charge found");
-        return;
+    const inTimeEl = document.getElementById('modal_in_time');
+    if (!inTimeEl) return;
+
+    try {
+        const dateOne = inTimeEl.value.replace(/-/g, "/");
+        const diffHours = Math.ceil(Math.abs((new Date() - new Date(dateOne)) / 3600000));
+        const totalCharge = diffHours * chargeValue;
+        document.getElementById('p-charge').innerHTML = currency + totalCharge;
+    } catch (e) {
+        console.log("Modal charge error:", e);
     }
+});
+</script>
 
-    var currency_format = document.getElementById('modal_currency_format').value;
-    var dateOne = document.getElementById('modal_in_time').value;
+<script>
+// Safe Form Submit Handler
+document.getElementById('update-form').addEventListener('submit', function(e) {
+    console.log("Form is submitting normally...");
 
-    dateOne = dateOne.replace(/-/g, "/");
+    var statusVal = document.querySelector('select[name="vehicle_status"]').value;
+    console.log("Status value sent to PHP:", statusVal);
 
-    const dateOneObj = new Date(dateOne);
-    var dateTwoObj = new Date();
-
-    var diff = (dateTwoObj - dateOneObj) / 3600000;
-    var hours = Math.ceil(Math.abs(diff));
-
-    var charge = hours * parking_charges;
-
-    document.getElementById('p-charge').innerHTML = currency_format + charge;
+    if (!statusVal) {
+        e.preventDefault();
+        alert("Status is required!");
+    }
 });
 </script>
 

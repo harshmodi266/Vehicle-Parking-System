@@ -10,9 +10,13 @@ include "header.php" ?>
             <div class="card-body position-relative">
                 <div id="table-data">
                     <?php 
-              $db = new Database();
-              $db->select('vehicle','*',null,null,'vehicle.id DESC',null);
-              $result = $db->getResult();
+              $conn = mysqli_connect("localhost","root","","install");
+
+$result = mysqli_query($conn, "
+    SELECT * FROM vehicle 
+    WHERE vehicle_status = 1 
+    ORDER BY id DESC
+");
             ?>
                     <table class="table-data table table-bordered">
                         <thead class="thead-light">
@@ -28,39 +32,38 @@ include "header.php" ?>
                         </thead>
                         <tbody>
                             <?php 
-                  if(count($result) > 0){
-                    $i = 0;
-                    foreach($result as $row){
-                      if($row['vehicle_status'] == '1'){
-                        $i++; 
-                ?>
+                
+if(mysqli_num_rows($result) > 0){
+    $i = 0;
+    while($row = mysqli_fetch_assoc($result)){
+        $i++;
+?>
                             <tr>
                                 <td><?php echo $i; ?></td>
                                 <td><?php echo $row['parking_number']; ?></td>
                                 <td><?php echo $row['owner_name']; ?></td>
                                 <td><?php echo $row['reg_number']; ?></td>
                                 <td>
-                                    <?php echo date('j M, Y',strtotime($row['vehicle_outtime'])); ?><br>
+                                    <?php echo date('j M, Y',strtotime($row['vehicle_outtime'])); ?><br>
                                     <small><?php echo date('H:i:s a',strtotime($row['vehicle_outtime'])); ?></small>
                                 </td>
                                 <td>
-                                    <?php 
-                      if($row['vehicle_status'] == '1'){ ?>
                                     <span class="badge badge-success">Vehicle Out</span>
-                                    <?php } ?>
                                 </td>
                                 <td>
                                     <ul class="action-list">
-                                        <li><a href="view-outgoingvehicle.php?void=<?php echo $row['id']; ?>"
-                                                class="btn btn-primary btn-sm"><img src="images/eye.png" alt=""></a>
+                                        <li>
+                                            <a href="view-outgoingvehicle.php?void=<?php echo $row['id']; ?>"
+                                                class="btn btn-primary btn-sm">
+                                                <img src="images/eye.png" alt="">
+                                            </a>
                                         </li>
                                     </ul>
                                 </td>
                             </tr>
                             <?php 
-                      }
-                    }
-                  }
+    }
+}
                 ?>
                         </tbody>
                     </table>
