@@ -1,8 +1,9 @@
-<?php 
-
- 
+<?php
 include "config.php";
+
 $db = new Database();
+
+// GET FILTER VALUES
 
 $search_type = $_POST['type'] ?? 'all';
 $from_date = $_POST['from_date'] ?? date('Y-m-d 00:00:00');
@@ -11,95 +12,90 @@ $to_date = $_POST['to_date'] ?? date('Y-m-d 23:59:59');
 $from_date = date('Y-m-d H:i:s', strtotime($from_date));
 $to_date = date('Y-m-d H:i:s', strtotime($to_date));
 
-$where = "(vehicle.vehicle_intime >='{$from_date}' AND vehicle.vehicle_intime <='{$to_date}')";
+// WHERE CONDITION
 
-if($search_type == 'incoming'){
-    $where .= " AND vehicle.vehicle_status=0";
-}elseif($search_type == 'outgoing'){
-    $where .= " AND vehicle.vehicle_status=1";
+$where = "(
+    (vehicle.vehicle_intime >= '$from_date' AND vehicle.vehicle_intime <= '$to_date') 
+    OR 
+    (vehicle.vehicle_outtime >= '$from_date' AND vehicle.vehicle_outtime <= '$to_date')
+)";
+
+if ($search_type == 'incoming') {
+    $where .= " AND vehicle.vehicle_status = 0";
+} elseif ($search_type == 'outgoing') {
+    $where .= " AND vehicle.vehicle_status = 1";
 }
 
-$db->select('vehicle','*',null,$where,null,null);
+// FETCH DATA
+
+$db->select('vehicle', '*', null, $where, null, null);
 $result = $db->getResult();
+
+// FORMAT DATA FOR DATATABLE
 
 $output = [];
 
-foreach($result as $row){
-    $output[] = [
-        "p_number" => $row['parking_number'],
-        "owner" => $row['owner_name'],
-        "vehicle_no" => $row['reg_number'],
-        "dateTime" => $row['vehicle_intime'],
-        "status" => ($row['vehicle_status'] == 1 ? 'Out' : 'In'),
-        "parking_charges" => $row['parking_charge'] ?? 0
-    ];
+if (!empty($result)) {
+    foreach ($result as $row) {
+
+        $data = [];
+
+        // Parking Number
+        $data['p_number'] = '<span>' . $row['parking_number'] . '</span>';
+
+        // Owner Name
+        $data['owner'] = '<span>' . $row['owner_name'] . '</span>';
+
+        // Vehicle Number
+        $data['vehicle_no'] = '<span>' . $row['reg_number'] . '</span>';
+
+        
+        // DATE & TIME FORMAT
+        
+        $dateTime = '<small><b>In Time: </b></small>' .
+            date('j M, Y', strtotime($row['vehicle_intime'])) . '<br>' .
+            '<small>' . date('h:i:s A', strtotime($row['vehicle_intime'])) . '</small><br>';
+
+        if ($row['vehicle_status'] == 1 && !empty($row['vehicle_outtime'])) {
+            $dateTime .= '<small><b>Out Time: </b></small>' .
+                date('j M, Y', strtotime($row['vehicle_outtime'])) . '<br>' .
+                '<small>' . date('h:i:s A', strtotime($row['vehicle_outtime'])) . '</small>';
+        }
+
+        $data['dateTime'] = $dateTime;
+
+        
+        // STATUS BADGE
+        
+        if ($row['vehicle_status'] == 1) {
+            $data['status'] = '<span class="badge badge-success">Out</span>';
+        } else {
+            $data['status'] = '<span class="badge badge-info">In</span>';
+        }
+
+        
+        // PARKING CHARGES FIX
+        
+        if (!empty($row['parking_charges'])) {
+            $data['parking_charges'] = '₹ ' . $row['parking_charges'];
+        } else {
+            $data['parking_charges'] = '₹ 0';
+        }
+
+        $output[] = $data;
+    }
 }
 
-echo json_encode(["data" => $output]);
+
+// FINAL RESPONSE (DATATABLE)
+
+$response = [
+    "draw" => intval($_POST['draw'] ?? 1),
+    "recordsTotal" => count($output),
+    "recordsFiltered" => count($output),
+    "data" => $output
+];
+
+echo json_encode($response);
 exit;
-
-    // include "config.php";
-    // $db = new Database();
-    // if(isset($_POST['type']) && $_POST['type'] != ''){
-    //     $search_type = $_POST['type'];
-    //     $from_date = date('Y-m-d H:i:s', strtotime($_POST['from_date']));   
-    //     $to_date = date('Y-m-d H:i:s', strtotime($_POST['to_date']));
-    //     $where = "(vehicle.vehicle_intime >='{$from_date}' AND vehicle.vehicle_intime <='{$to_date}') OR (vehicle.vehicle_outtime >='{$from_date}' AND vehicle.vehicle_outtime <='{$to_date}')";
-    //     if($search_type == 'all'){
-    //         $where .= '';
-    //     }elseif($search_type == 'incoming'){
-    //         $where = "((vehicle.vehicle_intime >='{$from_date}' AND vehicle.vehicle_intime <='{$to_date}') OR (vehicle.vehicle_outtime >='{$from_date}' AND vehicle.vehicle_outtime <='{$to_date}')) AND (vehicle.vehicle_status=0)";
-    //     }elseif($search_type == 'outgoing'){
-    //         $where = "((vehicle.vehicle_intime >='{$from_date}' AND vehicle.vehicle_intime <='{$to_date}') OR (vehicle.vehicle_outtime >='{$from_date}' AND vehicle.vehicle_outtime <='{$to_date}')) AND (vehicle.vehicle_status=1)";
-    //     }elseif($search_type == 'vehicle_number'){
-    //         if(!isset($_POST['vehicle_number']) || $_POST['vehicle_number'] == ''){
-    //             echo '<p class="alert alert-danger">Enter Vehicle Number.</p>'; exit;
-    //         }else{
-    //             $vehicle_number = $_POST['vehicle_number'];
-    //             $where = "((vehicle.vehicle_intime >='{$from_date}' AND vehicle.vehicle_intime <='{$to_date}') OR (vehicle.vehicle_outtime >='{$from_date}' AND vehicle.vehicle_outtime <='{$to_date}')) AND (vehicle.reg_number LIKE '%{$vehicle_number}')";
-    //         }
-    //     }elseif($search_type == 'user_name'){
-    //         if(!isset($_POST['user_name']) || $_POST['user_name'] == ''){
-    //             echo '<p class="alert alert-danger">Enter User Name.</p>'; exit;
-    //         }else{
-    //             $user_name = $_POST['user_name'];
-    //             $where = "((vehicle.vehicle_intime >='{$from_date}' AND vehicle.vehicle_intime <='{$to_date}') OR (vehicle.vehicle_outtime >='{$from_date}' AND vehicle.vehicle_outtime <='{$to_date}')) AND (vehicle.owner_name LIKE '%{$user_name}')";
-    //         }
-    //     }elseif($search_type == 'phone_number'){
-    //         if(!isset($_POST['phone_number']) || $_POST['phone_number'] == ''){
-    //             echo '<p class="alert alert-danger">Enter Phone Number.</p>'; exit;
-    //         }else{
-    //             $phone_number = $_POST['phone_number'];
-    //             $where = "((vehicle.vehicle_intime >='{$from_date}' AND vehicle.vehicle_intime <='{$to_date}') OR (vehicle.vehicle_outtime >='{$from_date}' AND vehicle.vehicle_outtime <='{$to_date}')) AND (vehicle.owner_contact LIKE '%{$phone_number}')";
-    //         }
-    //     }
-
-    //     $db->select('vehicle','*',null,$where,null,null);
-    //     $result = $db->getResult();
-    //     $output = [];
-    //     foreach($result as $row){
-    //         $row['p_number'] = '<span>'.$row['parking_number'].'</span>';
-    //         $row['owner'] = '<span>'.$row['owner_name'].'</span>';
-    //         $row['vehicle_no'] = '<span>'.$row['reg_number'].'</span>';
-    //         $row['dateTime'] = '<small><b>Vehicle InTime: </b></small>'.date('j M, Y',strtotime($row['vehicle_intime'])).'<br>'.'<small>'.date('H:i:s a',strtotime($row['vehicle_intime'])).'</small><br>';
-    //         if($row['vehicle_status'] == '1'){
-    //             $row['dateTime'] .= '<small><b>Vehicle OutTime: </b></small>'.date('j M, Y',strtotime($row['vehicle_outtime'])).'<br>'.'<small>'.date('H:i:s a',strtotime($row['vehicle_outtime'])).'</small>';
-    //         }
-    //         if($row['vehicle_status'] == '1'){
-    //             $row['status'] = '<span class="badge badge-success">Vehicle Out</span>';
-    //         }else{
-    //             $row['status'] = '<span class="badge badge-info">Vehicle In</span>';
-    //         }
-            
-    //         array_push($output,$row);
-    //     }
-
-    //     $dataset = array(
-    //         "totalrecords" => count($result),
-    //         "totaldisplayrecords" => count($result),
-    //         "data" => $output,
-    //     );
-    //     echo json_encode($dataset); exit;
-    // }
-
 ?>

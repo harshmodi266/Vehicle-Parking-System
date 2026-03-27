@@ -104,9 +104,14 @@ include "header.php";
                     </div>
                     <div class="card-body table-responsive">
                         <?php 
-              $db = new Database();
-              $db->select('vehicle','*',null,"vehicle_status=0","vehicle.id DESC","5");
-              $result = $db->getResult();
+              $conn = mysqli_connect("localhost","root","","install");
+
+$result = mysqli_query($conn, "
+    SELECT * FROM vehicle 
+    WHERE vehicle_status = 0 
+    ORDER BY id DESC 
+    LIMIT 5
+");
             ?>
                         <table class="table table-bordered">
                             <thead>
@@ -120,10 +125,10 @@ include "header.php";
                             </thead>
                             <tbody>
                                 <?php if(isset($result) && !empty($result)){
-                                    $i=0;
-                                    foreach($result as $row){
-                                        $i++;
-                                    ?>
+                  $i=0;
+                  while($row = mysqli_fetch_assoc($result)){
+                    $i++;
+                ?>
                                 <tr class='tr-shadow'>
                                     <td><?php echo $i; ?></td>
                                     <td><?php echo $row['parking_number']; ?></td>
@@ -135,7 +140,7 @@ include "header.php";
                                     </td>
                                     <td>
                                         <?php 
-                                        if($row['vehicle_status'] == '0'){ ?>
+                        if($row['vehicle_status'] == '0'){ ?>
                                         <span class="badge badge-info">Vehicle In</span>
                                         <?php } ?>
                                     </td>
@@ -148,8 +153,8 @@ include "header.php";
                                     </td>
                                 </tr>
                                 <?php 
-                             }
-                                    }else{ ?>
+                  }
+                }else{ ?>
                                 <tr>
                                     <td colspan="6" align="center">No Record Found.</td>
                                 </tr>

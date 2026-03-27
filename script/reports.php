@@ -1,7 +1,7 @@
 <?php $title = "Reports";
 include "header.php" ?>
-  <div class="message"></div>
-  <div class="container">
+<div class="message"></div>
+<div class="container">
     <div class="admin-content">
         <div class="card">
             <div class="card-header">
@@ -9,29 +9,44 @@ include "header.php" ?>
             </div>
             <div class="card-body position-relative">
                 <div id="table-data">
-                    <form id="search-form" class="form-horizontal row" type="POST">
+                    <form id="search-form" class="form-horizontal row" method="POST">
                         <div class="col-12 col-md-6 form-group">
                             <label for="">From Date</label>
-                            <input type="datetime-local" name="from_date" class="form-control" value="<?php echo date('Y-m-d 00:00:00'); ?>">
+                            <input type="datetime-local" name="from_date" class="form-control"
+                                value="<?php echo date('Y-m-d\TH:i'); ?>">
                         </div>
                         <div class="col-12 col-md-6 form-group">
                             <label for="">To Date</label>
-                            <input type="datetime-local" name="to_date" class="form-control" value="<?php echo date('Y-m-d 23:59:59') ?>">
+                            <input type="datetime-local" name="to_date" class="form-control"
+                                value="<?php echo date('Y-m-d\TH:i'); ?>">
                         </div>
                         <div class="col-12 col-md-4 form-group">
                             <label for="">Type</label>
-                            <select name="search_type" class="form-control">
-                                <option value="all" <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'all') ? 'selected' : '' ; ?>>All Records</option>
-                                <option value="incoming" <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'incoming') ? 'selected' : '' ; ?>>Incoming Vehicle</option>
-                                <option value="outgoing" <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'outgoing') ? 'selected' : '' ; ?>>Outgoing Vehicle</option>
-                                <option value="vehicle_number" <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'vehicle_nnumber') ? 'selected' : '' ; ?>>Search Vehicle Number</option>
-                                <option value="user_name" <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'user_name') ? 'selected' : '' ; ?>>Search User Name</option>
-                                <option value="phone_number" <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'phone_number') ? 'selected' : '' ; ?>>Search Phone Number</option>
+                            <select name="type" class="form-control">
+                                <option value="all"
+                                    <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'all') ? 'selected' : '' ; ?>>
+                                    All Records</option>
+                                <option value="incoming"
+                                    <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'incoming') ? 'selected' : '' ; ?>>
+                                    Incoming Vehicle</option>
+                                <option value="outgoing"
+                                    <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'outgoing') ? 'selected' : '' ; ?>>
+                                    Outgoing Vehicle</option>
+                                <option value="vehicle_number"
+                                    <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'vehicle_nnumber') ? 'selected' : '' ; ?>>
+                                    Search Vehicle Number</option>
+                                <option value="user_name"
+                                    <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'user_name') ? 'selected' : '' ; ?>>
+                                    Search User Name</option>
+                                <option value="phone_number"
+                                    <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'phone_number') ? 'selected' : '' ; ?>>
+                                    Search Phone Number</option>
                             </select>
                         </div>
                         <div class="col-12 col-md-4 form-group vehicle_number">
                             <label for="">Vehicle Number</label>
-                            <input type="text" class="form-control" name="vehicle_number" placeholder="Enter Vehicle Number">
+                            <input type="text" class="form-control" name="vehicle_number"
+                                placeholder="Enter Vehicle Number">
                         </div>
                         <div class="col-12 col-md-4 form-group user_name">
                             <label for="">User Name</label>
@@ -39,7 +54,8 @@ include "header.php" ?>
                         </div>
                         <div class="col-12 col-md-4 form-group phone_number">
                             <label for="">Phone Number</label>
-                            <input type="number" class="form-control" name="phone_number" placeholder="Enter Phone Number">
+                            <input type="number" class="form-control" name="phone_number"
+                                placeholder="Enter Phone Number">
                         </div>
                         <div class="col-12 col-md-12 form-group">
                             <input type="submit" class="btn btn-dark btn-sm" name="submit" value="Submit">
@@ -47,7 +63,7 @@ include "header.php" ?>
                     </form>
                 </div>
             </div>
-        </div> 
+        </div>
     </div>
     <div class="card">
         <div class="card-body position-relative">
@@ -63,7 +79,7 @@ include "header.php" ?>
                     </tr>
                 </thead>
                 <tbody>
-                        
+
                 </tbody>
                 <tfoot>
                     <tr>
@@ -78,6 +94,49 @@ include "header.php" ?>
             </table>
         </div>
     </div>
-  </div>
+</div>
+
+<script>
+$(document).ready(function() {
+
+    var table = $('#reportData').DataTable({
+        "ajax": {
+            "url": "php_files/report-data.php",
+            "type": "POST",
+            "data": function(d) {
+                var formData = $('#search-form').serializeArray();
+                formData.forEach(function(item) {
+                    d[item.name] = item.value;
+                });
+            }
+        },
+        "columns": [{
+                "data": "p_number"
+            },
+            {
+                "data": "owner"
+            },
+            {
+                "data": "vehicle_no"
+            },
+            {
+                "data": "dateTime"
+            },
+            {
+                "data": "status"
+            },
+            {
+                "data": "parking_charges"
+            }
+        ]
+    });
+
+    $('#search-form').on('submit', function(e) {
+        e.preventDefault();
+        table.ajax.reload();
+    });
+
+});
+</script>
 
 <?php include "footer.php" ?>
