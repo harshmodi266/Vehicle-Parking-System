@@ -163,6 +163,3 @@ include "header.php";
     </div>
 </div>
 <?php include "footer.php" ?>
-Today I worked on the login and logout pages and fixed session errors.
-I also created “Manage In” and “Manage Out” vehicle features.
-Additionally, I created a dashboard page to display multiple records.
