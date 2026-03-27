@@ -120,10 +120,10 @@ include "header.php";
                             </thead>
                             <tbody>
                                 <?php if(isset($result) && !empty($result)){
-                  $i=0;
-                  foreach($result as $row){
-                    $i++;
-                ?>
+                                    $i=0;
+                                    foreach($result as $row){
+                                        $i++;
+                                    ?>
                                 <tr class='tr-shadow'>
                                     <td><?php echo $i; ?></td>
                                     <td><?php echo $row['parking_number']; ?></td>
@@ -135,7 +135,7 @@ include "header.php";
                                     </td>
                                     <td>
                                         <?php 
-                        if($row['vehicle_status'] == '0'){ ?>
+                                        if($row['vehicle_status'] == '0'){ ?>
                                         <span class="badge badge-info">Vehicle In</span>
                                         <?php } ?>
                                     </td>
@@ -148,8 +148,8 @@ include "header.php";
                                     </td>
                                 </tr>
                                 <?php 
-                  }
-                }else{ ?>
+                             }
+                                    }else{ ?>
                                 <tr>
                                     <td colspan="6" align="center">No Record Found.</td>
                                 </tr>
