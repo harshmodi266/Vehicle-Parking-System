@@ -13,7 +13,7 @@
             }else if(!empty($_POST['old_logo']) && !empty($_FILES['new_logo']['name'])){
                 $errors = array();
                 /* get details of the uploaded file */
-                $file_name = $_FILES['new_logo']['name'];
+                $file_name = $_FILES['new_logo']['name']; 
                 $file_size = $_FILES['new_logo']['size'];
                 $file_tmp = $_FILES['new_logo']['tmp_name'];
                 $file_type = $_FILES['new_logo']['type'];

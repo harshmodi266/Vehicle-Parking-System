@@ -1,4 +1,8 @@
 <?php
+error_reporting(0);
+// ob_clean();
+header('Content-Type: application/json');
+
 include "config.php";
 
 $db = new Database();
@@ -14,22 +18,29 @@ $to_date = date('Y-m-d H:i:s', strtotime($to_date));
 
 // WHERE CONDITION
 
-$where = "(
-    (vehicle.vehicle_intime >= '$from_date' AND vehicle.vehicle_intime <= '$to_date') 
-    OR 
-    (vehicle.vehicle_outtime >= '$from_date' AND vehicle.vehicle_outtime <= '$to_date')
-)";
+$where = "vehicle_intime BETWEEN '$from_date' AND '$to_date'";
 
 if ($search_type == 'incoming') {
-    $where .= " AND vehicle.vehicle_status = 0";
+    $where .= " AND vehicle_status = 0";
 } elseif ($search_type == 'outgoing') {
-    $where .= " AND vehicle.vehicle_status = 1";
+    $where .= " AND vehicle_status = 1";
 }
 
 // FETCH DATA
 
-$db->select('vehicle', '*', null, $where, null, null);
-$result = $db->getResult();
+$conn = new mysqli("localhost", "root", "", "install");
+
+$query = "SELECT * FROM vehicle WHERE $where";
+$res = $conn->query($query);
+
+$result = [];
+
+if ($res) {
+    while ($row = $res->fetch_assoc()) {
+        $result[] = $row;
+    }
+}
+
 
 // FORMAT DATA FOR DATATABLE
 

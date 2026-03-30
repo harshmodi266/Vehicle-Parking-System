@@ -349,7 +349,7 @@ $(document).ready(function () {
         processing: true, //Feature control the processing indicator.
         order: [], //Initial no order.
         ajax: {
-            url: "./php_files/report.php",
+            url: "php_files/report-data.php",
             type: "POST",
             data: function (data) {
                 // Read values

@@ -13,12 +13,12 @@ include "header.php" ?>
                         <div class="col-12 col-md-6 form-group">
                             <label for="">From Date</label>
                             <input type="datetime-local" name="from_date" class="form-control"
-                                value="<?php echo date('Y-m-d\TH:i'); ?>">
+                                value="<?php echo date('Y-m-01\T00:00'); ?>">
                         </div>
                         <div class="col-12 col-md-6 form-group">
                             <label for="">To Date</label>
                             <input type="datetime-local" name="to_date" class="form-control"
-                                value="<?php echo date('Y-m-d\TH:i'); ?>">
+                                value="<?php echo date('Y-m-d\T23:59'); ?>">
                         </div>
                         <div class="col-12 col-md-4 form-group">
                             <label for="">Type</label>
@@ -33,7 +33,7 @@ include "header.php" ?>
                                     <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'outgoing') ? 'selected' : '' ; ?>>
                                     Outgoing Vehicle</option>
                                 <option value="vehicle_number"
-                                    <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'vehicle_nnumber') ? 'selected' : '' ; ?>>
+                                    <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'vehicle_number') ? 'selected' : '' ; ?>>
                                     Search Vehicle Number</option>
                                 <option value="user_name"
                                     <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'user_name') ? 'selected' : '' ; ?>>
@@ -128,7 +128,19 @@ $(document).ready(function() {
             {
                 "data": "parking_charges"
             }
-        ]
+        ],
+
+        // 🔥 ADD THIS PART
+        "footerCallback": function(row, data) {
+            var total = 0;
+
+            data.forEach(function(item) {
+                var charge = item.parking_charges.replace('₹ ', '');
+                total += parseFloat(charge);
+            });
+
+            $(this.api().column(5).footer()).html('₹ ' + total);
+        }
     });
 
     $('#search-form').on('submit', function(e) {

@@ -50,6 +50,9 @@ echo (!empty($result) && isset($result[0]['site_name']))
     <link rel="stylesheet" href="assets/css/datatables.bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/jquery.dataTables.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="assets/js/admin.js"></script>
 </head>
 
 <body>
