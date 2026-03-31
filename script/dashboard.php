@@ -104,15 +104,15 @@ include "header.php";
                     </div>
                     <div class="card-body table-responsive">
                         <?php 
-              $conn = mysqli_connect("localhost","root","","install");
+                        $conn = mysqli_connect("localhost","root","","install");
 
-$result = mysqli_query($conn, "
-    SELECT * FROM vehicle 
-    WHERE vehicle_status = 0 
-    ORDER BY id DESC 
-    LIMIT 5
-");
-            ?>
+                        $result = mysqli_query($conn, "
+                            SELECT * FROM vehicle 
+                            WHERE vehicle_status = 0 
+                            ORDER BY id DESC 
+                            LIMIT 5
+                        ");
+                    ?>
                         <table class="table table-bordered">
                             <thead>
                                 <th>S.No</th>
@@ -125,10 +125,10 @@ $result = mysqli_query($conn, "
                             </thead>
                             <tbody>
                                 <?php if(isset($result) && !empty($result)){
-                  $i=0;
-                  while($row = mysqli_fetch_assoc($result)){
-                    $i++;
-                ?>
+                                    $i=0;
+                                    while($row = mysqli_fetch_assoc($result)){
+                                        $i++;
+                                ?>
                                 <tr class='tr-shadow'>
                                     <td><?php echo $i; ?></td>
                                     <td><?php echo $row['parking_number']; ?></td>
@@ -153,8 +153,8 @@ $result = mysqli_query($conn, "
                                     </td>
                                 </tr>
                                 <?php 
-                  }
-                }else{ ?>
+                                    }
+                                    }else{ ?>
                                 <tr>
                                     <td colspan="6" align="center">No Record Found.</td>
                                 </tr>

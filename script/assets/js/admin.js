@@ -345,72 +345,7 @@ $(document).ready(function () {
     });
 
 
-    var colltable = $('#reportData').DataTable({
-        processing: true, //Feature control the processing indicator.
-        order: [], //Initial no order.
-        ajax: {
-            url: "php_files/report-data.php",
-            type: "POST",
-            data: function (data) {
-                // Read values
-                var from_date = $('input[name=from_date]').val();
-                var to_date = $('input[name=to_date]').val();
-                var type = $('select[name=search_type] option:selected').val();
-                var vehicle_number = $('input[name=vehicle_number]').val();
-                var user_name = $('input[name=user_name]').val();
-                var phone_number = $('input[name=phone_number]').val();
-                // Append to data
-                data.from_date = from_date;
-                data.to_date = to_date;
-                data.type = type;
-                data.vehicle_number = vehicle_number;
-                data.user_name = user_name;
-                data.phone_number = phone_number;
-            },
-        },
-        columns: [
-            { data: "p_number" },
-            { data: "owner" },
-            { data: "vehicle_no" },
-            { data: "dateTime" },
-            { data: "status" },
-            { data: "parking_charges" },
-        ],
-        dom: 'Bfrtip',
-        buttons: [
-            { extend: 'print', footer: true },
-            { extend: 'excelHtml5', footer: true },
-            { extend: 'pdfHtml5', footer: true }
-        ],
-        footerCallback: function (row, data, start, end, display) {
-            var api = this.api(), data;
-            var numFormat = $.fn.dataTable.render.number(",", ".", 0, "").display;
-            // Remove the formatting to get integer data for summation
-            var intVal = function (i) {
-                return typeof i === "string" ?
-                    i.replace(/[\$,]/g, "") * 1 :
-                    typeof i === "number" ?
-                        i : 0;
-            };
-            // Total Column 4 over all pages
-            total = api
-                .column(5)
-                .data()
-                .reduce(function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0);
-            // Update footer
-            $(api.column(5).footer()).html
-                (
-                    numFormat(total)
-                );
-        }
-    });
 
-    $("#search-form").on("submit", function (e) {
-        e.preventDefault();
-        colltable.ajax.reload();
-    });
 
 
 });

@@ -32,7 +32,7 @@ $conn = new mysqli("localhost", "root", "", "install");
 
 $query = "SELECT * FROM vehicle WHERE $where";
 $res = $conn->query($query);
-
+ 
 $result = [];
 
 if ($res) {
