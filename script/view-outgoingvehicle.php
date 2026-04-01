@@ -17,14 +17,30 @@ include "header.php" ?>
             </div>
             <div class="card-body position-relative">
                 <?php 
-                    $vehicle_id = $_GET['void'];
-                    $conn = mysqli_connect("localhost","root","","install");
-                    $result = mysqli_query($conn, "
-                        SELECT * FROM vehicle WHERE id = ".(int)$vehicle_id
-                    );
-                    if(mysqli_num_rows($result) > 0){
-                        while($row = mysqli_fetch_assoc($result)){
-                ?>
+$vehicle_id = $_GET['void'];
+$conn = mysqli_connect("localhost","root","","install");
+
+$result = mysqli_query($conn, "SELECT * FROM vehicle WHERE id=".(int)$vehicle_id);
+
+if(mysqli_num_rows($result) > 0){
+    $row = mysqli_fetch_assoc($result);
+
+    // Get category + charge
+    $catQuery = mysqli_query($conn, "SELECT * FROM vehicle_category WHERE id=".$row['vehicle_cat']);
+    $cat = mysqli_fetch_assoc($catQuery);
+    $parking_charge = $cat['parking_charge'] ?? 0;
+
+    // Calculate charge
+    $in_time = strtotime($row['vehicle_intime']);
+    $out_time = strtotime($row['vehicle_outtime']);
+
+    $total_charge = 0;
+
+    if(!empty($row['vehicle_outtime']) && $out_time > $in_time){
+        $hours = ceil(($out_time - $in_time) / 3600);
+        $total_charge = $hours * $parking_charge;
+    }
+?>
                 <table class="table table-bordered">
                     <tr>
                         <th>Parking Number</th>
@@ -33,12 +49,6 @@ include "header.php" ?>
                     <tr>
                         <th>Vehicle Category</th>
                         <td>
-                            <?php 
-                                $catQuery = mysqli_query($conn, "SELECT * FROM vehicle_category WHERE id=".$row['vehicle_cat']);
-                                $cat = mysqli_fetch_assoc($catQuery);
-                                $parking_charge = $cat['parking_charge'] ?? 0;
-                            ?>
-
                             <input type="hidden" id="charge" value="<?php echo $parking_charge; ?>">
                             <?php echo $cat['category_name']; ?>
                         </td>
@@ -62,19 +72,24 @@ include "header.php" ?>
                     <tr>
                         <th>In Time</th>
                         <td>
-                            <?php echo date('Y-m-d H:i:s a', strtotime($row['vehicle_intime'])); ?>
+                            <?php echo date('d M Y, h:i:s A', strtotime($row['vehicle_intime'])); ?>
                         </td>
                     </tr>
                     <tr>
                         <th>Out Time</th>
                         <td>
-                            <?php echo date('Y-m-d H:i:s a', strtotime($row['vehicle_outtime'])); ?>
+                            <?php echo date('d M Y, h:i:s A', strtotime($row['vehicle_outtime'])); ?>
                         </td>
                     </tr>
                     <tr>
                         <th>Parking Charges</th>
                         <td>
-                            <?php echo $currency_format.$row['parking_charges']; ?>
+                            <?php if($row['parking_charges'] != NULL){
+    echo $currency_format.$row['parking_charges'];
+} else {
+    echo $currency_format.$total_charge;
+}
+?>
                         </td>
                     </tr>
                     <tr>
@@ -92,7 +107,7 @@ include "header.php" ?>
 
                 <?php 
             }
-        }
+        
                 ?>
             </div>
         </div>

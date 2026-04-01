@@ -41,8 +41,14 @@ include "header.php" ?>
                                 <td><?php echo $row['owner_name']; ?></td>
                                 <td><?php echo $row['reg_number']; ?></td>
                                 <td>
-                                    <?php echo date('j M, Y',strtotime($row['vehicle_intime'])); ?><br>
-                                    <small><?php echo date('H:i:s a',strtotime($row['vehicle_intime'])); ?></small>
+                                    <?php 
+                                    if(!empty($row['vehicle_intime']) && $row['vehicle_intime'] != '0000-00-00 00:00:00'){
+                                        echo date('j M, Y', strtotime($row['vehicle_intime'])) . "<br>";
+                                        echo "<small>" . date('h:i:s A', strtotime($row['vehicle_intime'])) . "</small>";
+                                    } else {
+                                        echo "N/A";
+                                    }
+                                    ?>
                                 </td>
                                 <td>
                                     <?php 

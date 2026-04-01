@@ -23,7 +23,7 @@ include "header.php" ?>
             if(empty($result)){ ?>
                 <div class="alert alert-danger">First Add Vehicle Category</div>
                 <?php } ?>
-                <form class="yourform" id="add-vehicle" action="<?php $_SERVER['PHP_SELF']; ?>" method="post"
+                <form class="yourform" id="add-vehicle" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post"
                     autocomplete="off">
                     <div class="form-group">
                         <label>Vehicle Category</label>
@@ -60,7 +60,7 @@ include "header.php" ?>
                     </div>
                     <div class="form-group">
                         <label>Vehicle In Time</label>
-                        <input type="hidden" class="in_time" id="clock" name="in_time" value="">
+                        <!-- <input type="hidden" class="in_time" id="clock" name="in_time" value=""> -->
                         <div id="clock1" class="form-control"></div>
                     </div>
                     <input type="submit" name="save" class="btn btn-dark float-right" value="Save" required>
@@ -69,47 +69,24 @@ include "header.php" ?>
         </div>
     </div>
 </div>
-</div>
-</div>
-</div>
+
 <script type="text/javascript">
 function displayclick() {
-    var date = (new Date()).toISOString().split('T')[0];
-    var time = new Date();
-    var hrs = time.getHours();
-    var min = time.getMinutes();
-    var sec = time.getSeconds();
-    var en = 'AM';
+    var now = new Date();
 
-    if (hrs > 12) {
-        en = 'PM';
-    }
+    var year = now.getFullYear();
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    var day = ("0" + now.getDate()).slice(-2);
 
-    if (hrs > 12) {
-        hrs = hrs - 12;
-    }
+    var hrs = ("0" + now.getHours()).slice(-2);
+    var min = ("0" + now.getMinutes()).slice(-2);
+    var sec = ("0" + now.getSeconds()).slice(-2);
 
-    if (hrs == 0) {
-        hrs = 12;
-    }
+    var display = day + "-" + month + "-" + year + " " + hrs + ":" + min + ":" + sec;
 
-    if (hrs < 10) {
-        hrs = '0' + hrs;
-    }
-
-    if (min < 10) {
-        min = '0' + min;
-    }
-
-    if (sec < 10) {
-        sec = '0' + sec;
-    }
-
-
-    document.getElementById('clock').value = time;
-    document.getElementById('clock1').innerHTML = date + ' ' + hrs + ':' + min + ':' + sec + ' ' + en;
+    document.getElementById('clock1').innerHTML = display;
 }
-setInterval(displayclick, 500);
+setInterval(displayclick, 1000);
 </script>
 
 <?php include "footer.php" ?>

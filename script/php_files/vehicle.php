@@ -11,7 +11,7 @@
     $reg_no = $_POST['reg_no'];
     $owner_name = $_POST['owner_name'];
     $owner_contact = $_POST['owner_contact'];
-    $vehicle_intime = $_POST['vehicle_intime'];
+    $vehicle_intime = date('Y-m-d H:i:s');
 
     if($vehicle_cat == '' || $vehicle_company == '' || $reg_no == ''){
         echo json_encode(['error'=>'All fields required']); exit;
@@ -29,24 +29,44 @@
     }
 
     exit;
-}
+}   
 
     //update vehicle
     if(isset($_POST['updateVehicle'])){
         if(!isset($_POST['out_time']) || empty($_POST['out_time'])){
             echo json_encode(array('error'=>'Vehicle Out Time Field is Empty.')); exit;
-        }else if(!isset($_POST['parking_charge']) || empty($_POST['parking_charge'])){
-            echo json_encode(array('error'=>'Parking Charge Field is Empty.')); exit;
-        }else if(!isset($_POST['vehicle_status']) || empty($_POST['vehicle_status'])){
+        }else if(!isset($_POST['vehicle_status'])){
             echo json_encode(array('error'=>'Vehicle Status Field is Empty.')); exit;
         }else{
 
             $db = new Database();
+$vehicle_id = $_POST['vehicle_id'];
 
+// get vehicle data
+$getVehicle = $db->select('vehicle','*',null,"id='$vehicle_id'",null,null);
+$vehicle = $db->getResult()[0];
+
+// get category charge
+$getCat = $db->select('vehicle_category','*',null,"id='".$vehicle['vehicle_cat']."'",null,null);
+$cat = $db->getResult()[0];
+
+$charge_per_hour = $cat['parking_charge'] ?? 0;
+
+// calculate time
+$in_time = strtotime($vehicle['vehicle_intime']);
+$out_time_real = $_POST['out_time'];
+$out_time = strtotime($out_time_real);
+
+$total_charge = 0;
+
+if($out_time > $in_time){
+    $hours = ceil(($out_time - $in_time) / 3600);
+    $total_charge = $hours * $charge_per_hour;
+}
             $params = [
-                'id' => $db->escapeString($_POST['vehicle_id']),
+                
                 'vehicle_outtime'=>$db->escapeString($_POST['out_time']),
-                'parking_charges'=>$db->escapeString($_POST['parking_charge']),
+                'parking_charges'=>$total_charge,
                 'vehicle_status'=>$db->escapeString($_POST['vehicle_status']),
             ];
 
