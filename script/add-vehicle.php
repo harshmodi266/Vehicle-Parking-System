@@ -17,7 +17,7 @@ include "header.php" ?>
             </div>
             <div class="card-body position-relative">
                 <?php 
-           $conn = mysqli_connect("localhost","root","","install");
+                $conn = mysqli_connect("localhost","root","","install");
 
             $result = mysqli_query($conn, "SELECT * FROM vehicle_category WHERE category_status = 1");
             if(empty($result)){ ?>
