@@ -17,17 +17,14 @@ include "header.php" ?>
             </div>
             <div class="card-body position-relative">
                 <?php 
-$vehicle_id = $_GET['void'];
-
-$conn = mysqli_connect("localhost","root","","install");
-
-$result = mysqli_query($conn, "
-    SELECT * FROM vehicle WHERE id = ".(int)$vehicle_id
-);
-
-if(mysqli_num_rows($result) > 0){
-    while($row = mysqli_fetch_assoc($result)){
-?>
+                    $vehicle_id = $_GET['void'];
+                    $conn = mysqli_connect("localhost","root","","install");
+                    $result = mysqli_query($conn, "
+                        SELECT * FROM vehicle WHERE id = ".(int)$vehicle_id
+                    );
+                    if(mysqli_num_rows($result) > 0){
+                        while($row = mysqli_fetch_assoc($result)){
+                ?>
                 <table class="table table-bordered">
                     <tr>
                         <th>Parking Number</th>
@@ -44,10 +41,6 @@ if(mysqli_num_rows($result) > 0){
 
                             <input type="hidden" id="charge" value="<?php echo $parking_charge; ?>">
                             <?php echo $cat['category_name']; ?>
-
-
-
-
                         </td>
                     </tr>
                     <tr>
@@ -98,9 +91,9 @@ if(mysqli_num_rows($result) > 0){
                 </table>
 
                 <?php 
-    }
-}
-?>
+            }
+        }
+                ?>
             </div>
         </div>
     </div>

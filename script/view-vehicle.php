@@ -41,15 +41,15 @@ mysqli_query($conn, "
                 <?php 
                 $vehicle_id = isset($_GET['veid']) ? (int)$_GET['veid'] : 0;
 
-if($vehicle_id <= 0){
-    echo "<div class='alert alert-danger'>Invalid Vehicle ID</div>";
-    exit;
-}
+                if($vehicle_id <= 0){
+                    echo "<div class='alert alert-danger'>Invalid Vehicle ID</div>";
+                    exit;
+                }
                 $db = new Database();
-               $db->select("SELECT * FROM vehicle WHERE id=$vehicle_id");
+                $db->select("SELECT * FROM vehicle WHERE id=$vehicle_id");
                 $result = $db->getResult();
                 if(count($result) > 0){
-    $row = $result[0];
+                $row = $result[0];
             ?>
                 <table class="table table-bordered">
                     <tr>
@@ -60,26 +60,26 @@ if($vehicle_id <= 0){
                         <th>Vehicle Category</th>
                         <td>
                             <?php 
-$db->select("SELECT * FROM vehicle_category WHERE id=".$row['vehicle_cat']);
-$result1 = $db->getResult();
+                                $db->select("SELECT * FROM vehicle_category WHERE id=".$row['vehicle_cat']);
+                                $result1 = $db->getResult();
 
-$vehicle_cat = (int)$row['vehicle_cat']; 
+                                $vehicle_cat = (int)$row['vehicle_cat']; 
 
-$parking_charge_value = 0;
+                                $parking_charge_value = 0;
 
-if(!empty($result1)){
-    foreach($result1 as $row1){
-        if($row1['id'] == $vehicle_cat){
-            $parking_charge_value = $row1['parking_charge'];
-?>
+                                if(!empty($result1)){
+                                    foreach($result1 as $row1){
+                                        if($row1['id'] == $vehicle_cat){
+                                            $parking_charge_value = $row1['parking_charge'];
+                            ?>
                             <input type="hidden" id="charge" value="<?php echo $parking_charge_value; ?>">
                             <input type="hidden" id="pcharge" value="<?php echo $parking_charge_value; ?>">
                             <?php echo $row1['category_name']; ?>
                             <?php
-        }
-    }
-}
-?>
+                                    }
+                                }
+                            }
+                            ?>
                         </td>
                     </tr>
                     <tr>
@@ -128,7 +128,7 @@ if(!empty($result1)){
                         <th>Status</th>
                         <td>
                             <?php 
-                        if($row['vehicle_status'] == '0'){ ?>
+                            if($row['vehicle_status'] == '0'){ ?>
                             Vehicle In
                             <?php }else{ ?>
                             Vehicle Out
@@ -144,11 +144,11 @@ if(!empty($result1)){
                 </table>
 
                 <?php
-    // end foreach
-} else {
-    echo "<div class='alert alert-danger'>Vehicle not found!</div>";
-}
-?>
+                    // end foreach
+                    } else {
+                        echo "<div class='alert alert-danger'>Vehicle not found!</div>";
+                    }         
+                 ?>
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

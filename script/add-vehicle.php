@@ -19,7 +19,7 @@ include "header.php" ?>
                 <?php 
            $conn = mysqli_connect("localhost","root","","install");
 
-$result = mysqli_query($conn, "SELECT * FROM vehicle_category WHERE category_status = 1");
+            $result = mysqli_query($conn, "SELECT * FROM vehicle_category WHERE category_status = 1");
             if(empty($result)){ ?>
                 <div class="alert alert-danger">First Add Vehicle Category</div>
                 <?php } ?>
@@ -30,12 +30,12 @@ $result = mysqli_query($conn, "SELECT * FROM vehicle_category WHERE category_sta
                         <select class="form-control vehicle_cat" name="vehicle_cat" id="">
                             <option value="">Select Vehicle Category</option>
                             <?php 
-                   if(mysqli_num_rows($result) > 0){
-    while($row = mysqli_fetch_assoc($result)){
-        echo "<option value='{$row['id']}'>{$row['category_name']}</option>";
-    }
-}
-                  ?>
+                                if(mysqli_num_rows($result) > 0){
+                                while($row = mysqli_fetch_assoc($result)){
+                                    echo "<option value='{$row['id']}'>{$row['category_name']}</option>";
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="form-group">

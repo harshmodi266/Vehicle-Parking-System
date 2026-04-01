@@ -11,10 +11,9 @@ include "header.php" ?>
             <div class="card-body position-relative">
                 <div id="table-data">
                     <?php 
-              $conn = mysqli_connect("localhost","root","","install");
-
-$result = mysqli_query($conn, "SELECT * FROM vehicle_category ORDER BY id DESC");
-            ?>
+                        $conn = mysqli_connect("localhost","root","","install");
+                        $result = mysqli_query($conn, "SELECT * FROM vehicle_category ORDER BY id DESC");
+                    ?>
                     <table class="table-data table table-bordered">
                         <thead class="thead-light">
                             <tr>
