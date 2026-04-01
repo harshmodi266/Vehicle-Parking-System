@@ -230,21 +230,25 @@ $(document).ready(function () {
     //delete vehicle category
     $('.delete-category').on("click", function () {
         var cat_id = $(this).data('vcid');
+
         if (confirm("Are you sure want to delete this vehicle category.")) {
             document.getElementsByClassName('card-body')[0].innerHTML += loader;
+
             $.ajax({
                 url: './php_files/vehicle-category.php',
                 type: 'POST',
                 data: { cat_delete: cat_id },
                 dataType: 'json',
                 success: function (data) {
-                    if (data.hasOwnProperty('success')) {
+
+                    if (data.success === true) {
                         messageShow("<div class='alert alert-success'>Data deleted successfully.</div>");
                         setTimeout(function () { window.location = 'vehicle-category.php'; }, 2000);
                     } else {
                         messageShow("<div class='alert alert-danger'>" + data.error + "</div>");
                         setTimeout(function () { $('.loader').hide(); }, 2000);
                     }
+
                 }
             });
         }

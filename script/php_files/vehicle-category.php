@@ -68,25 +68,28 @@
 }
 
     //delete vehicle category
-    if(isset($_POST['cat_delete'])){
-        $db = new Database();
+if(isset($_POST['cat_delete'])){
+    $id = $_POST['cat_delete'];
 
-        $cat_id = $db->escapeString($_POST['cat_delete']);
-        $db->select('vehicle','*',null,"vehicle_cat='{$cat_id}'",null,null);
-        $result = $db->getResult();
-        if(!empty($result)){
-            echo json_encode(array('error'=>'Can not delete vehicle category record this is used in vehicle.'));
-        }else{  
-            $db->delete('vehicle_category',"id='{$cat_id}'");
-            $response = $db->getResult();
-            if(!empty($response)){
-                echo json_encode(array('success'=>$response)); exit;
-            }else{
-                echo json_encode(array('error'=>'Data not deleted.')); exit;
-            }
+    $conn = mysqli_connect("localhost","root","","install");
+
+    $sql = "UPDATE vehicle_category 
+            SET category_status = 0 
+            WHERE id = '$id'";
+
+    if(mysqli_query($conn, $sql)){
+
+        //  CHECK affected rows
+        if(mysqli_affected_rows($conn) > 0){
+            echo json_encode(['success' => true]);
+        }else{
+            echo json_encode(['error' => 'Category already inactive or not found.']);
         }
-    }
 
+    }else{
+        echo json_encode(['error' => mysqli_error($conn)]);
+    }
+}
 
 
 ?>
