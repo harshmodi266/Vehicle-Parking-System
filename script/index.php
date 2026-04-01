@@ -43,10 +43,10 @@ echo (!empty($result) && isset($result[0]['site_name']))
                         <div class="card">
                             <div class="card-header p-2" style="background:#D85C27;">
                                 <h2 class="text-center text-white m-2"><?php 
-echo (!empty($result) && isset($result[0]['site_name'])) 
-    ? $result[0]['site_name'] 
-    : 'Vehicle Parking System'; 
-?></h2>
+                                echo (!empty($result) && isset($result[0]['site_name'])) 
+                                    ? $result[0]['site_name'] 
+                                    : 'Vehicle Parking System'; 
+                                ?></h2>
                             </div>
                             <div class="card-body login-form position-relative">
                                 <!-- <div class="loader-container">

@@ -37,11 +37,10 @@ if(mysqli_num_rows($result) > 0){
                         <th>Vehicle Category</th>
                         <td>
                             <?php 
-$catQuery = mysqli_query($conn, "SELECT * FROM vehicle_category WHERE id=".$row['vehicle_cat']);
-$cat = mysqli_fetch_assoc($catQuery);
-
-$parking_charge = $cat['parking_charge'] ?? 0;
-?>
+                                $catQuery = mysqli_query($conn, "SELECT * FROM vehicle_category WHERE id=".$row['vehicle_cat']);
+                                $cat = mysqli_fetch_assoc($catQuery);
+                                $parking_charge = $cat['parking_charge'] ?? 0;
+                            ?>
 
                             <input type="hidden" id="charge" value="<?php echo $parking_charge; ?>">
                             <?php echo $cat['category_name']; ?>

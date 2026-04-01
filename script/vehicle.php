@@ -12,10 +12,9 @@ include "header.php" ?>
             <div class="card-body position-relative">
                 <div id="table-data">
                     <?php 
-             $conn = mysqli_connect("localhost","root","","install");
-
-$result = mysqli_query($conn, "SELECT * FROM vehicle ORDER BY id DESC");
-            ?>
+                        $conn = mysqli_connect("localhost","root","","install");
+                        $result = mysqli_query($conn, "SELECT * FROM vehicle ORDER BY id DESC");
+                    ?>
                     <table class="table-data table table-bordered">
                         <thead class="thead-light">
                             <tr>
@@ -30,12 +29,12 @@ $result = mysqli_query($conn, "SELECT * FROM vehicle ORDER BY id DESC");
                         </thead>
                         <tbody>
                             <?php 
-                  if(mysqli_num_rows($result) > 0){
-    $i = 0;
-    while($row = mysqli_fetch_assoc($result)){
-        if($row['vehicle_status'] == '0'){
-            $i++;
-                ?>
+                                if(mysqli_num_rows($result) > 0){
+                                $i = 0;
+                                while($row = mysqli_fetch_assoc($result)){
+                                    if($row['vehicle_status'] == '0'){
+                                        $i++;
+                            ?>
                             <tr>
                                 <td><?php echo $i; ?></td>
                                 <td><?php echo $row['parking_number']; ?></td>
@@ -47,7 +46,7 @@ $result = mysqli_query($conn, "SELECT * FROM vehicle ORDER BY id DESC");
                                 </td>
                                 <td>
                                     <?php 
-                        if($row['vehicle_status'] == '0'){ ?>
+                                    if($row['vehicle_status'] == '0'){ ?>
                                     <span class="badge badge-info">Vehicle In</span>
                                     <?php } ?>
                                 </td>
@@ -62,9 +61,9 @@ $result = mysqli_query($conn, "SELECT * FROM vehicle ORDER BY id DESC");
                                 </td>
                             </tr>
                             <?php 
+                            }
+                        }
                     }
-                    }
-                  }
                 ?>
                         </tbody>
                     </table>

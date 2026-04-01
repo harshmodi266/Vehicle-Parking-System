@@ -27,18 +27,18 @@ $result = mysqli_query($conn, "SELECT * FROM vehicle_category ORDER BY id DESC")
                         </thead>
                         <tbody>
                             <?php 
-                  if(mysqli_num_rows($result) > 0){
-    $i = 0;
-    while($row = mysqli_fetch_assoc($result)){
-        $i++;
-                ?>
+                            if(mysqli_num_rows($result) > 0){
+                            $i = 0;
+                            while($row = mysqli_fetch_assoc($result)){
+                                $i++;
+                          ?>
                             <tr>
                                 <td><?php echo $i; ?></td>
                                 <td><?php echo $row['category_name']; ?></td>
                                 <td><?php echo $currency_format.$row['parking_charge']; ?></td>
                                 <td>
                                     <?php
-                        if($row['category_status'] == '1'){ ?>
+                                    if($row['category_status'] == '1'){ ?>
                                     <span class="badge badge-success">
                                         Active
                                     </span>

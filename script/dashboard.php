@@ -140,7 +140,7 @@ include "header.php";
                                     </td>
                                     <td>
                                         <?php 
-                        if($row['vehicle_status'] == '0'){ ?>
+                                        if($row['vehicle_status'] == '0'){ ?>
                                         <span class="badge badge-info">Vehicle In</span>
                                         <?php } ?>
                                     </td>

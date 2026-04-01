@@ -9,14 +9,12 @@ include "header.php" ?>
             </div>
             <div class="card-body position-relative">
                 <?php
-              $db = new Database();
-$db->select("SELECT * FROM admin");
-$result = $db->getResult();
-
-if(count($result) > 0){
-
-    $row = $result[0]
-          ?>
+                    $db = new Database();
+                    $db->select("SELECT * FROM admin");
+                    $result = $db->getResult();
+                    if(count($result) > 0){
+                    $row = $result[0]
+                ?>
                 <form class="yourform" id="update-profile" action="<?php $_SERVER['PHP_SELF']; ?>" method="post"
                     autocomplete="off">
                     <div class="form-group">
@@ -56,7 +54,6 @@ if(count($result) > 0){
                 </form>
                 <?php
               }
-            
           ?>
             </div>
         </div>

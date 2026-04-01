@@ -32,12 +32,11 @@ $result = mysqli_query($conn, "
                         </thead>
                         <tbody>
                             <?php 
-                
-if(mysqli_num_rows($result) > 0){
-    $i = 0;
-    while($row = mysqli_fetch_assoc($result)){
-        $i++;
-?>
+                                if(mysqli_num_rows($result) > 0){
+                                $i = 0;
+                                while($row = mysqli_fetch_assoc($result)){
+                                    $i++;
+                            ?>
                             <tr>
                                 <td><?php echo $i; ?></td>
                                 <td><?php echo $row['parking_number']; ?></td>
@@ -62,9 +61,9 @@ if(mysqli_num_rows($result) > 0){
                                 </td>
                             </tr>
                             <?php 
-    }
-}
-                ?>
+                            }
+                        }
+                    ?>
                         </tbody>
                     </table>
                 </div>

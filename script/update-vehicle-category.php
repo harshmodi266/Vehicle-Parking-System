@@ -17,17 +17,17 @@ include "header.php" ?>
             </div>
             <div class="card-body position-relative">
                 <?php 
-            $cat_id = $_GET['vcid'];
-            $cat_id = $_GET['vcid'];
+                    $cat_id = $_GET['vcid'];
+                    $cat_id = $_GET['vcid'];
 
-$conn = mysqli_connect("localhost","root","","install");
+                    $conn = mysqli_connect("localhost","root","","install");
 
-$query = "SELECT * FROM vehicle_category WHERE id='$cat_id'";
-$result = mysqli_query($conn, $query);
-            if(mysqli_num_rows($result) > 0){
-    while($row = mysqli_fetch_assoc($result)){
-          ?>
-                <form class="yourform" id="update-Vehiclecategory" action="" method="post" autocomplete="off">
+                    $query = "SELECT * FROM vehicle_category WHERE id='$cat_id'";
+                    $result = mysqli_query($conn, $query);
+                        if(mysqli_num_rows($result) > 0){
+                    while($row = mysqli_fetch_assoc($result)){
+                ?>
+                <form rm class="yourform" id="update-Vehiclecategory" action="" method="post" autocomplete="off">
                     <div class="form-group">
                         <label>Name</label>
                         <input type="hidden" name="cat_id" value="<?php echo $row['id']; ?>" required>
