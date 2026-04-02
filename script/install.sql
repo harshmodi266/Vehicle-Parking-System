@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 31, 2026 at 08:30 AM
+-- Generation Time: Apr 02, 2026 at 12:52 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -96,15 +96,22 @@ INSERT INTO `vehicle` (`id`, `parking_number`, `vehicle_cat`, `vehicle_company`,
 (15, 1861, 3, 'BMW', '8513', 'harsh', '1234567890', '2026-03-01 15:47:33', '2026-03-23 15:47:33', 20, NULL, 0),
 (16, 7944, 3, 'Tata', '8653', 'kenil', '1542639874', '2026-03-01 00:00:00', NULL, NULL, NULL, 0),
 (17, 3315, 3, 'Suzuki ', '1525', 'bhargav', '1524638974', '2026-03-23 16:27:04', '2026-03-27 10:32:12', NULL, NULL, 1),
-(18, 9850, 3, 'Lamborghini ', '0085', 'harshil', '1563248975', '2026-03-01 00:00:00', NULL, NULL, NULL, 0),
-(19, 4147, 7, 'honda', '5642', 'hemil', '5269856412', '0000-00-00 00:00:00', NULL, NULL, NULL, 0),
-(20, 2027, 3, 'tata', '6985', 'kartik', '4569325874', '0000-00-00 00:00:00', NULL, NULL, NULL, 0),
-(21, 8692, 7, 'tvs', '4569', 'darshan', '2589632145', '0000-00-00 00:00:00', NULL, NULL, NULL, 0),
-(22, 1255, 3, 'maruti suzuki', '8532', 'haresh', '2563987452', '0000-00-00 00:00:00', NULL, NULL, NULL, 0),
-(23, 3841, 3, 'bmw', '5265', 'dev', '4585963258', '0000-00-00 00:00:00', NULL, NULL, NULL, 0),
-(24, 2454, 3, 'lemborgini', '4569', 'harsh', '9157738653', '0000-00-00 00:00:00', NULL, NULL, NULL, 0),
-(25, 6849, 7, 'sign', '0014', 'harit', '2563417896', '0000-00-00 00:00:00', NULL, NULL, NULL, 0),
-(26, 9903, 3, 'bently', '9865', 'het', '6589741236', '0000-00-00 00:00:00', NULL, NULL, NULL, 0);
+(18, 9850, 3, 'Lamborghini ', '0085', 'harshil', '1563248975', '2026-03-01 00:00:00', '2026-04-01 12:22:56', NULL, NULL, 1),
+(19, 4147, 7, 'honda', '5642', 'hemil', '5269856412', '2026-04-01 15:48:26', NULL, NULL, NULL, 0),
+(20, 2027, 3, 'tata', '6985', 'kartik', '4569325874', '2026-04-01 15:48:26', '2026-04-01 16:51:20', NULL, NULL, 1),
+(21, 8692, 7, 'tvs', '4569', 'darshan', '2589632145', '2026-04-01 15:48:26', '2026-04-01 16:51:20', NULL, NULL, 1),
+(22, 1255, 3, 'maruti suzuki', '8532', 'haresh', '2563987452', '2026-04-01 15:48:26', NULL, NULL, NULL, 0),
+(23, 3841, 3, 'bmw', '5265', 'dev', '4585963258', '2026-04-01 15:48:26', NULL, NULL, NULL, 0),
+(24, 2454, 3, 'lemborgini', '4569', 'harsh', '9157738653', '2026-04-01 15:48:26', NULL, NULL, NULL, 0),
+(25, 6849, 7, 'sign', '0014', 'harit', '2563417896', '2026-04-01 15:48:26', NULL, NULL, NULL, 0),
+(26, 9903, 3, 'bently', '9865', 'het', '6589741236', '2026-04-01 15:48:26', NULL, NULL, NULL, 0),
+(27, 6154, 7, 'honda', '5655', 'harit', '9145826535', '2026-04-01 15:48:26', NULL, NULL, NULL, 0),
+(28, 9678, 4, 'bmw', '8888', 'Bhargavi ', '222222222', '2026-04-01 15:48:26', '2026-04-01 13:22:25', NULL, NULL, 1),
+(29, 1295, 7, 'royal eengine ', '00236', 'divy', '6352418974', '2026-04-01 13:25:49', NULL, NULL, NULL, 0),
+(30, 3188, 3, 'kia', '2563', 'spider men', '8569741235', '2026-04-01 13:52:38', NULL, NULL, NULL, 0),
+(31, 8923, 4, 'xdfe', '58527', 'fgdsgg ', '7418529638', '2026-04-01 14:03:52', NULL, NULL, NULL, 0),
+(32, 7218, 3, 'fewsdf', '4458', 'harsh', '2589631478', '2026-04-01 17:46:47', '2026-04-01 17:47:28', NULL, NULL, 1),
+(33, 7104, 7, 'java', '2534', 'kenil', '8273645137', '2026-04-02 16:15:52', NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -124,11 +131,12 @@ CREATE TABLE `vehicle_category` (
 --
 
 INSERT INTO `vehicle_category` (`id`, `category_name`, `parking_charge`, `category_status`) VALUES
-(3, 'cars', 200, 1),
-(4, 'BMW', 50, 1),
+(3, 'cars', 80, 1),
+(4, 'BMW', 50, 0),
 (5, 'TATA', 20, 0),
 (6, 'Suzuki ', 30, 0),
-(7, 'bike', 20, 1);
+(7, 'bike', 20, 1),
+(8, 'activa', 30, 1);
 
 --
 -- Indexes for dumped tables
@@ -178,13 +186,13 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `vehicle`
 --
 ALTER TABLE `vehicle`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `vehicle_category`
 --
 ALTER TABLE `vehicle_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

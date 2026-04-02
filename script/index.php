@@ -49,9 +49,7 @@ echo (!empty($result) && isset($result[0]['site_name']))
                                 ?></h2>
                             </div>
                             <div class="card-body login-form position-relative">
-                                <!-- <div class="loader-container">
-                  <div class="loader"></div>
-                </div> -->
+
                                 <form id="admin_Login" action="" method="POST" autocomplete="off">
                                     <div class="form-group">
                                         <label>Username</label>

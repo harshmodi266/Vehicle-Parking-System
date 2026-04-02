@@ -32,7 +32,6 @@
                                     <option value="outgoing"
                                         <?php echo (isset($_GET['search_type']) && $_GET['search_type'] == 'outgoing') ? 'selected' : '' ; ?>>
                                         Outgoing Vehicle</option>
-
                                 </select>
                             </div>
                             <div class="col-12 col-md-4 form-group vehicle_number">

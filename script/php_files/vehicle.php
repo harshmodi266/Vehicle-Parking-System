@@ -40,31 +40,30 @@
         }else{
 
             $db = new Database();
-$vehicle_id = $_POST['vehicle_id'];
+            $vehicle_id = $_POST['vehicle_id'];
 
-// get vehicle data
-$getVehicle = $db->select('vehicle','*',null,"id='$vehicle_id'",null,null);
-$vehicle = $db->getResult()[0];
+            // get vehicle data
+            $getVehicle = $db->select('vehicle','*',null,"id='$vehicle_id'",null,null);
+            $vehicle = $db->getResult()[0];
 
-// get category charge
-$getCat = $db->select('vehicle_category','*',null,"id='".$vehicle['vehicle_cat']."'",null,null);
-$cat = $db->getResult()[0];
+            // get category charge
+            $getCat = $db->select('vehicle_category','*',null,"id='".$vehicle['vehicle_cat']."'",null,null);
+            $cat = $db->getResult()[0];
 
-$charge_per_hour = $cat['parking_charge'] ?? 0;
+            $charge_per_hour = $cat['parking_charge'] ?? 0;
 
-// calculate time
-$in_time = strtotime($vehicle['vehicle_intime']);
-$out_time_real = $_POST['out_time'];
-$out_time = strtotime($out_time_real);
+            // calculate time
+            $in_time = strtotime($vehicle['vehicle_intime']);
+            $out_time_real = $_POST['out_time'];
+            $out_time = strtotime($out_time_real);
 
-$total_charge = 0;
+            $total_charge = 0;
 
-if($out_time > $in_time){
-    $hours = ceil(($out_time - $in_time) / 3600);
-    $total_charge = $hours * $charge_per_hour;
-}
+            if($out_time > $in_time){
+                $hours = ceil(($out_time - $in_time) / 3600);
+                $total_charge = $hours * $charge_per_hour;
+            }
             $params = [
-                
                 'vehicle_outtime'=>$db->escapeString($_POST['out_time']),
                 'parking_charges'=>$total_charge,
                 'vehicle_status'=>$db->escapeString($_POST['vehicle_status']),

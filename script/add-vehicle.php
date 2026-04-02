@@ -19,7 +19,7 @@ include "header.php" ?>
                 <?php 
                 $conn = mysqli_connect("localhost","root","","install");
 
-            $result = mysqli_query($conn, "SELECT * FROM vehicle_category WHERE category_status = 1");
+                $result = mysqli_query($conn, "SELECT * FROM vehicle_category WHERE category_status = 1");
             if(empty($result)){ ?>
                 <div class="alert alert-danger">First Add Vehicle Category</div>
                 <?php } ?>

@@ -71,7 +71,7 @@ mysqli_query($conn, "
                                     foreach($result1 as $row1){
                                         if($row1['id'] == $vehicle_cat){
                                             $parking_charge_value = $row1['parking_charge'];
-                            ?>
+                                ?>
                             <input type="hidden" id="charge" value="<?php echo $parking_charge_value; ?>">
                             <input type="hidden" id="pcharge" value="<?php echo $parking_charge_value; ?>">
                             <?php echo $row1['category_name']; ?>
@@ -136,11 +136,11 @@ mysqli_query($conn, "
                         </td>
                     </tr>
                     <!-- <tr>
-                    <th>Remark</th>
-                    <td>
-                        <textarea class="form-control" name="" id="" cols="30" rows="5"></textarea>
-                    </td>
-                </tr> -->
+                        <th>Remark</th>
+                        <td>
+                            <textarea class="form-control" name="" id="" cols="30" rows="5"></textarea>
+                        </td>
+                    </tr> -->
                 </table>
 
                 <?php
