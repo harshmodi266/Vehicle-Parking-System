@@ -53,7 +53,7 @@ include "header.php" ?>
                     <input type="submit" name="save" class="btn btn-dark float-right" value="Update" required>
                 </form>
                 <?php
-              }
+              } 
           ?>
             </div>
         </div>

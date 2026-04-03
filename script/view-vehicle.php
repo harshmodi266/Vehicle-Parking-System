@@ -7,20 +7,37 @@ if(isset($_POST['submit'])){
     $vehicle_id = $_POST['vehicle_id'] ?? 0;
     $status = $_POST['vehicle_status'] ?? '';
 
-   $conn = mysqli_connect("localhost","root","","install");
+    $conn = mysqli_connect("localhost","root","","install");
 
-mysqli_query($conn, "
-    UPDATE vehicle 
-    SET vehicle_status='$status', vehicle_outtime='".date("Y-m-d H:i:s")."' 
-    WHERE id=".(int)$vehicle_id
-);
+    // get vehicle data
+    $res = mysqli_query($conn, "SELECT vehicle_intime, vehicle_cat FROM vehicle WHERE id=".(int)$vehicle_id);
+    $row = mysqli_fetch_assoc($res);
 
+    // get charge per hour
+    $res2 = mysqli_query($conn, "SELECT parking_charge FROM vehicle_category WHERE id=".$row['vehicle_cat']);
+    $cat = mysqli_fetch_assoc($res2);
+
+    $rate = $cat['parking_charge'];
+
+    // calculate charge
+    $in = strtotime($row['vehicle_intime']);
+    $out = time();
+
+    $hours = ceil(($out - $in) / 3600);
+    $charge = $hours * $rate;
+
+    // UPDATE WITH CHARGES 
+    mysqli_query($conn, "
+        UPDATE vehicle 
+        SET vehicle_status='$status',
+            vehicle_outtime='".date("Y-m-d H:i:s")."',
+            parking_charges='$charge'
+        WHERE id=".(int)$vehicle_id
+    );
 
     echo "<script>window.location.href='vehicle.php';</script>";
     exit;
 }
-
-
 ?>
 <div class="message"></div>
 <div class="container">
@@ -71,14 +88,14 @@ mysqli_query($conn, "
                                     foreach($result1 as $row1){
                                         if($row1['id'] == $vehicle_cat){
                                             $parking_charge_value = $row1['parking_charge'];
-                                ?>
+                                            ?>
                             <input type="hidden" id="charge" value="<?php echo $parking_charge_value; ?>">
                             <input type="hidden" id="pcharge" value="<?php echo $parking_charge_value; ?>">
                             <?php echo $row1['category_name']; ?>
                             <?php
+                                        }
                                     }
                                 }
-                            }
                             ?>
                         </td>
                     </tr>
@@ -135,12 +152,6 @@ mysqli_query($conn, "
                             <?php } ?>
                         </td>
                     </tr>
-                    <!-- <tr>
-                        <th>Remark</th>
-                        <td>
-                            <textarea class="form-control" name="" id="" cols="30" rows="5"></textarea>
-                        </td>
-                    </tr> -->
                 </table>
 
                 <?php
@@ -324,6 +335,28 @@ document.getElementById('update-form').addEventListener('submit', function(e) {
         e.preventDefault();
         alert("Status is required!");
     }
+});
+</script>
+<script>
+$('.vehicle-out-btn').click(function() {
+
+    var id = $(this).data('id');
+
+    $.ajax({
+        url: 'php_files/vehicle.php',
+        type: 'POST',
+        data: {
+            updateVehicle: true,
+            vehicle_id: id,
+            out_time: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            vehicle_status: 1
+        },
+        success: function(res) {
+            alert("Vehicle Out Successfully");
+            location.reload();
+        }
+    });
+
 });
 </script>
 

@@ -58,7 +58,7 @@
             $out_time = strtotime($out_time_real);
 
             $total_charge = 0;
-
+ 
             if($out_time > $in_time){
                 $hours = ceil(($out_time - $in_time) / 3600);
                 $total_charge = $hours * $charge_per_hour;
